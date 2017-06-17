@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.RuleInfoDao">
+	<resultMap id="ruleInfoResult" type="ruleInfo">
+		<result property="ruleId" column="rule_id" />
+		<result property="ruleName" column="rule_name" />
+		<result property="ruleUrl" column="rule_url" />
+		<result property="ruleUrlMenu" column="rule_url_menu" />
+		<result property="ruleBelong" column="rule_belong" />
+		<result property="ruleRank" column="rule_rank" />
+		<result property="ruleStatus" column="rule_status" />
+		<result property="ruleCode" column="rule_code" />
+	</resultMap>
+
+	<sql id="ruleInfoWhere">
+		<if test="ruleId != null">      	
+        <![CDATA[ rule_id like concat('%',#{ruleId},'%') ]]>
+		</if>
+		<if test="ruleName != null">      	
+        <![CDATA[ rule_name like concat('%',#{ruleName},'%') ]]>
+		</if>
+		<if test="ruleUrl != null">      	
+        <![CDATA[ rule_url like concat('%',#{ruleUrl},'%') ]]>
+		</if>
+		<if test="ruleBelong != null">      	
+        <![CDATA[ rule_belong like concat('%',#{ruleBelong},'%') ]]>
+		</if>
+		<if test="ruleRank != null">      	
+        <![CDATA[ rule_rank like concat('%',#{ruleRank},'%') ]]>
+		</if>
+		<if test="ruleStatus != null">      	
+        <![CDATA[ rule_status like concat('%',#{ruleStatus},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="ruleInfoColumn">
+		rule_id,rule_name,rule_url,rule_url_menu,rule_belong,rule_rank,rule_status,rule_code
+  </sql>
+
+	<select id="loadRuleInfo" resultMap="ruleInfoResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="ruleInfoColumn" />
+		from rule_info
+		where rule_id=#{value}
+	</select>
+
+	<select id="findRuleListByRuleId" resultMap="ruleInfoResult" >
+		select
+		<include refid="ruleInfoColumn" />
+		from rule_info
+		where rule_status = 0 and rule_code != "null" and rule_id in
+		<foreach item="item" index="index" collection="list"  open="(" separator="," close=")">
+           #{item}
+      	</foreach>
+      	order by rule_code ASC
+	</select>
+	
+	<select id="findRuleListByRuleCode" resultMap="ruleInfoResult"
+		parameterType="ruleInfo">
+		SELECT b.rule_id,b.rule_name,b.rule_url,b.rule_url_menu,b.rule_belong,b.rule_rank,b.rule_status,b.rule_code 
+		FROM user_menu a,rule_info b WHERE a.menu_id = b.rule_id
+		<if test="ruleCode != null">      	
+        	<![CDATA[ AND b.rule_belong =#{ruleCode} ]]>
+		</if>
+		<if test="userId != null">      	
+        	<![CDATA[ AND a.user_id =#{userId} ]]>
+		</if>		 
+		order by b.rule_rank ASC
+	</select>
+	
+	<select id="findRuleListByBelong" resultMap="ruleInfoResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="ruleInfoColumn" />
+		from rule_info
+		where rule_belong=#{value} and rule_status = 0 order by rule_rank asc
+	</select>
+
+	<select id="queryList" resultMap="ruleInfoResult"
+		parameterType="ruleInfo">
+		select
+		<include refid="ruleInfoColumn" />
+		from rule_info
+		<where>
+			<include refid="ruleInfoWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by rule_id desc 
+		</if> -->
+	</select>
+	
+	<select id="queryListForMenu" resultMap="ruleInfoResult"
+		parameterType="ruleInfo">
+		select
+		<include refid="ruleInfoColumn" />
+		from rule_info where rule_status = 0 and rule_code != "null"
+<!-- 		<if test="orderBy != null">
+			order by rule_code asc 
+		</if> -->
+	</select>
+	
+	<select id="queryAllListForMenu" resultMap="ruleInfoResult"
+		parameterType="ruleInfo">
+		select
+		<include refid="ruleInfoColumn" />
+		from rule_info where rule_status = 0 
+<!-- 		<if test="orderBy != null">
+			order by rule_code asc 
+		</if> -->
+	</select>
+	
+	<select id="queryListForMenuByUser" resultMap="ruleInfoResult"
+		parameterType="java.lang.Integer">
+		SELECT a.rule_id,a.rule_name,a.rule_url,a.rule_url_menu,a.rule_belong,a.rule_rank,a.rule_status,a.rule_code 
+		 FROM rule_info a,user_menu b WHERE a.rule_id = b.menu_id AND b.user_id = #{value}
+	</select>
+
+	<select id="queryPageList" resultMap="ruleInfoResult"
+		parameterType="ruleInfo">
+		select
+		<include refid="ruleInfoColumn" />
+		from rule_info
+		<where>
+			<include refid="ruleInfoWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by rule_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="ruleInfo">
+		select count(rule_id) from rule_info
+		<where>
+			<include refid="ruleInfoWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteRuleInfo" parameterType="java.lang.Integer">
+		delete from
+		rule_info where rule_id=#{value}
+  </delete>
+
+	<insert id="insertRuleInfo" parameterType="ruleInfo">
+		insert into rule_info (rule_id
+		<if test="ruleName != null">
+			,rule_name
+			</if>
+		<if test="ruleUrl != null">
+			,rule_url
+			</if>
+		<if test="ruleUrlMenu != null">
+			,rule_url_menu
+			</if>
+		<if test="ruleBelong != null">
+			,rule_belong
+			</if>
+		<if test="ruleRank != null">
+			,rule_rank
+			</if>
+		<if test="ruleStatus != null">
+			,rule_status
+			</if>
+		<if test="ruleCode != null">
+			,rule_code
+			</if>
+		) values(#{ruleId}
+		<if test="ruleName != null">
+			,#{ruleName}
+			</if>
+		<if test="ruleUrl != null">
+			,#{ruleUrl}
+			</if>
+		<if test="ruleUrlMenu != null">
+			,#{ruleUrlMenu}
+			</if>
+		<if test="ruleBelong != null">
+			,#{ruleBelong}
+			</if>
+		<if test="ruleRank != null">
+			,#{ruleRank}
+			</if>
+		<if test="ruleStatus != null">
+			,#{ruleStatus}
+			</if>
+		<if test="ruleCode != null">
+			,#{ruleCode}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="ruleId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateRuleInfo" parameterType="ruleInfo">
+		update rule_info set rule_id=#{ruleId}
+		<if test="ruleName != null">
+			,rule_name=#{ruleName}
+			</if>
+		<if test="ruleUrl != null">
+			,rule_url=#{ruleUrl}
+			</if>
+		<if test="ruleUrlMenu != null">
+			,rule_url_menu=#{ruleUrlMenu}
+			</if>
+		<if test="ruleBelong != null">
+			,rule_belong=#{ruleBelong}
+			</if>
+		<if test="ruleRank != null">
+			,rule_rank=#{ruleRank}
+			</if>
+		<if test="ruleStatus != null">
+			,rule_status=#{ruleStatus}
+			</if>
+		<if test="ruleCode != null">
+			,rule_code=#{ruleCode}
+			</if>
+		where rule_id=#{ruleId}
+	</update>
+
+</mapper>

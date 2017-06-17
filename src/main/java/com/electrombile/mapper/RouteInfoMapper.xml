@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.RouteInfoDao">
+	<resultMap id="routeInfoResult" type="routeInfo">
+		<result property="routeId" column="route_id" />
+		<result property="routeCount" column="route_count" />
+		<result property="routeStart" column="route_start" />
+		<result property="routeEnd" column="route_end" />
+		<result property="startDate" column="start_date" />
+		<result property="endDate" column="end_date" />
+		<result property="routeTime" column="route_time" />
+		<result property="memberId" column="member_id" />
+	</resultMap>
+
+	<sql id="routeInfoWhere">
+		<if test="routeId != null">      	
+        <![CDATA[ route_id like concat('%',#{routeId},'%') ]]>
+		</if>
+		<if test="routeCount != null">      	
+        <![CDATA[ route_count like concat('%',#{routeCount},'%') ]]>
+		</if>
+		<if test="routeStart != null">      	
+        <![CDATA[ route_start like concat('%',#{routeStart},'%') ]]>
+		</if>
+		<if test="routeEnd != null">      	
+        <![CDATA[ route_end like concat('%',#{routeEnd},'%') ]]>
+		</if>
+		<if test="startDate != null">      	
+        <![CDATA[ start_date like concat('%',#{startDate},'%') ]]>
+		</if>
+		<if test="endDate != null">      	
+        <![CDATA[ end_date like concat('%',#{endDate},'%') ]]>
+		</if>
+		<if test="routeTime != null">      	
+        <![CDATA[ route_time like concat('%',#{routeTime},'%') ]]>
+		</if>
+		<if test="memberId != null">      	
+        <![CDATA[ member_id like concat('%',#{memberId},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="routeInfoColumn">
+		route_id,route_count,route_start,route_end,start_date,end_date,route_time,member_id
+  </sql>
+
+	<select id="loadRouteInfo" resultMap="routeInfoResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="routeInfoColumn" />
+		from route_info
+		where route_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="routeInfoResult"
+		parameterType="routeInfo">
+		select
+		<include refid="routeInfoColumn" />
+		from route_info
+		<where>
+			<include refid="routeInfoWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by route_id desc 
+		</if> -->
+	</select>
+
+	<select id="queryPageList" resultMap="routeInfoResult"
+		parameterType="routeInfo">
+		select
+		<include refid="routeInfoColumn" />
+		from route_info
+		<where>
+			<include refid="routeInfoWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by route_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="routeInfo">
+		select count(route_id) from route_info
+		<where>
+			<include refid="routeInfoWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteRouteInfo" parameterType="java.lang.Integer">
+		delete from
+		route_info where route_id=#{value}
+  </delete>
+
+	<insert id="insertRouteInfo" parameterType="routeInfo">
+		insert into route_info (route_id
+		<if test="routeCount != null">
+			,route_count
+			</if>
+		<if test="routeStart != null">
+			,route_start
+			</if>
+		<if test="routeEnd != null">
+			,route_end
+			</if>
+		<if test="startDate != null">
+			,start_date
+			</if>
+		<if test="endDate != null">
+			,end_date
+			</if>
+		<if test="routeTime != null">
+			,route_time
+			</if>
+		<if test="memberId != null">
+			,member_id
+			</if>
+		) values(#{routeId}
+		<if test="routeCount != null">
+			,#{routeCount}
+			</if>
+		<if test="routeStart != null">
+			,#{routeStart}
+			</if>
+		<if test="routeEnd != null">
+			,#{routeEnd}
+			</if>
+		<if test="startDate != null">
+			,#{startDate}
+			</if>
+		<if test="endDate != null">
+			,#{endDate}
+			</if>
+		<if test="routeTime != null">
+			,#{routeTime}
+			</if>
+		<if test="memberId != null">
+			,#{memberId}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="routeId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateRouteInfo" parameterType="routeInfo">
+		update route_info set route_id=#{routeId}
+		<if test="routeCount != null">
+			,route_count=#{routeCount}
+			</if>
+		<if test="routeStart != null">
+			,route_start=#{routeStart}
+			</if>
+		<if test="routeEnd != null">
+			,route_end=#{routeEnd}
+			</if>
+		<if test="startDate != null">
+			,start_date=#{startDate}
+			</if>
+		<if test="endDate != null">
+			,end_date=#{endDate}
+			</if>
+		<if test="routeTime != null">
+			,route_time=#{routeTime}
+			</if>
+		<if test="memberId != null">
+			,member_id=#{memberId}
+			</if>
+		where route_id=#{routeId}
+	</update>
+
+</mapper>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.AbnormalMoveMessageDao">
+	<resultMap id="abnormalMoveMessageResult" type="abnormalMoveMessage">
+		<result property="abnormalId" column="abnormal_id" />
+		<result property="departmentId" column="department_id" />
+		<result property="departmentElectric" column="department_electric" />
+		<result property="departmentCoordinate" column="department_coordinate" />
+		<result property="abnormalDate" column="abnormal_date" />
+		<result property="moveCoordinate" column="move_coordinate" />
+		<result property="disposeDate" column="dispose_date" />
+		<result property="userId" column="user_id" />
+		<result property="disposeResult" column="dispose_result" />
+		<result property="remark" column="remark" />
+		<result property="remark1" column="remark1" />
+	</resultMap>
+
+	<sql id="abnormalMoveMessageWhere">
+		<if test="abnormalId != null">      	
+        <![CDATA[ abnormal_id like concat('%',#{abnormalId},'%') ]]>
+		</if>
+		<if test="departmentId != null">      	
+        <![CDATA[ department_id like concat('%',#{departmentId},'%') ]]>
+		</if>
+		<if test="departmentElectric != null">      	
+        <![CDATA[ department_electric like concat('%',#{departmentElectric},'%') ]]>
+		</if>
+		<if test="departmentCoordinate != null">      	
+        <![CDATA[ department_coordinate like concat('%',#{departmentCoordinate},'%') ]]>
+		</if>
+		<if test="abnormalDate != null">      	
+        <![CDATA[ abnormal_date like concat('%',#{abnormalDate},'%') ]]>
+		</if>
+		<if test="moveCoordinate != null">      	
+        <![CDATA[ move_coordinate like concat('%',#{moveCoordinate},'%') ]]>
+		</if>
+		<if test="disposeDate != null">      	
+        <![CDATA[ dispose_date like concat('%',#{disposeDate},'%') ]]>
+		</if>
+		<if test="userId != null">      	
+        <![CDATA[ user_id like concat('%',#{userId},'%') ]]>
+		</if>
+		<if test="disposeResult != null">      	
+        <![CDATA[ dispose_result like concat('%',#{disposeResult},'%') ]]>
+		</if>
+		<if test="remark != null">      	
+        <![CDATA[ remark like concat('%',#{remark},'%') ]]>
+		</if>
+		<if test="remark1 != null">      	
+        <![CDATA[ remark1 like concat('%',#{remark1},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="abnormalMoveMessageColumn">
+		abnormal_id,department_id,department_electric,department_coordinate,abnormal_date,move_coordinate,dispose_date,user_id,dispose_result,remark,remark1
+  </sql>
+
+	<select id="loadAbnormalMoveMessage" resultMap="abnormalMoveMessageResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="abnormalMoveMessageColumn" />
+		from abnormal_move_message
+		where abnormal_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="abnormalMoveMessageResult"
+		parameterType="abnormalMoveMessage">
+		select
+		<include refid="abnormalMoveMessageColumn" />
+		from abnormal_move_message
+		<where>
+			<include refid="abnormalMoveMessageWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by abnormal_id desc 
+		</if>
+	</select>
+
+	<select id="queryPageList" resultMap="abnormalMoveMessageResult"
+		parameterType="abnormalMoveMessage">
+		select
+		<include refid="abnormalMoveMessageColumn" />
+		from abnormal_move_message
+		<where>
+			<include refid="abnormalMoveMessageWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by abnormal_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if>
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="abnormalMoveMessage">
+		select count(abnormal_id) from abnormal_move_message
+		<where>
+			<include refid="abnormalMoveMessageWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteAbnormalMoveMessage" parameterType="java.lang.Integer">
+		delete from
+		abnormal_move_message where abnormal_id=#{value}
+  </delete>
+
+	<insert id="insertAbnormalMoveMessage" parameterType="abnormalMoveMessage">
+		insert into abnormal_move_message (abnormal_id
+		<if test="departmentId != null">
+			,department_id
+			</if>
+		<if test="departmentElectric != null">
+			,department_electric
+			</if>
+		<if test="departmentCoordinate != null">
+			,department_coordinate
+			</if>
+		<if test="abnormalDate != null">
+			,abnormal_date
+			</if>
+		<if test="moveCoordinate != null">
+			,move_coordinate
+			</if>
+		<if test="disposeDate != null">
+			,dispose_date
+			</if>
+		<if test="userId != null">
+			,user_id
+			</if>
+		<if test="disposeResult != null">
+			,dispose_result
+			</if>
+		<if test="remark != null">
+			,remark
+			</if>
+		<if test="remark1 != null">
+			,remark1
+			</if>
+		) values(#{abnormalId}
+		<if test="departmentId != null">
+			,#{departmentId}
+			</if>
+		<if test="departmentElectric != null">
+			,#{departmentElectric}
+			</if>
+		<if test="departmentCoordinate != null">
+			,#{departmentCoordinate}
+			</if>
+		<if test="abnormalDate != null">
+			,#{abnormalDate}
+			</if>
+		<if test="moveCoordinate != null">
+			,#{moveCoordinate}
+			</if>
+		<if test="disposeDate != null">
+			,#{disposeDate}
+			</if>
+		<if test="userId != null">
+			,#{userId}
+			</if>
+		<if test="disposeResult != null">
+			,#{disposeResult}
+			</if>
+		<if test="remark != null">
+			,#{remark}
+			</if>
+		<if test="remark1 != null">
+			,#{remark1}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="abnormalId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateAbnormalMoveMessage" parameterType="abnormalMoveMessage">
+		update abnormal_move_message set abnormal_id=#{abnormalId}
+		<if test="departmentId != null">
+			,department_id=#{departmentId}
+			</if>
+		<if test="departmentElectric != null">
+			,department_electric=#{departmentElectric}
+			</if>
+		<if test="departmentCoordinate != null">
+			,department_coordinate=#{departmentCoordinate}
+			</if>
+		<if test="abnormalDate != null">
+			,abnormal_date=#{abnormalDate}
+			</if>
+		<if test="moveCoordinate != null">
+			,move_coordinate=#{moveCoordinate}
+			</if>
+		<if test="disposeDate != null">
+			,dispose_date=#{disposeDate}
+			</if>
+		<if test="userId != null">
+			,user_id=#{userId}
+			</if>
+		<if test="disposeResult != null">
+			,dispose_result=#{disposeResult}
+			</if>
+		<if test="remark != null">
+			,remark=#{remark}
+			</if>
+		<if test="remark1 != null">
+			,remark1=#{remark1}
+			</if>
+		where abnormal_id=#{abnormalId}
+	</update>
+
+</mapper>

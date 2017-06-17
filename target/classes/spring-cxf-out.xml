@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+		http://cxf.apache.org/transports/http/configuration
+		http://cxf.apache.org/schemas/configuration/http-conf.xsd
+		http://cxf.apache.org/jaxws  
+        http://cxf.apache.org/schemas/jaxws.xsd ">
+        
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	
+	<!-- 对外接口service -->
+	<bean id="memberService" class="com.electrombile.cxf.service.impl.MemberServiceImpl" />
+	
+	<bean id="baseCxfInterceptor" class="com.electrombile.interceptor.BaseCxfInterceptor">
+		<constructor-arg value="receive" />
+	</bean>
+
+	<!-- <bean id="outLoggingInterceptor" class="com.electrombile.interceptor.LoggingOutInterceptor" /> -->
+
+	<!-- cxf接口访问安全认证  -->
+<!-- 	<conduit name="*.http-conduit"
+	  xmlns:sec="http://cxf.apache.org/configuration/security"
+	  xmlns="http://cxf.apache.org/transports/http/configuration">
+	  <authorization>
+	     <sec:UserName>${wsClientUserName}</sec:UserName>
+	     <sec:Password>${wsClientPassword}</sec:Password>
+	     <sec:AuthorizationType>Basic</sec:AuthorizationType>
+	  </authorization>
+	</conduit> -->
+
+    <bean id="responseResolver" class="com.electrombile.core.ResponseResolver" />
+	<bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
+		<property name="ignoreNamespaces" value="true" />
+		<property name="dropRootElement" value="true" />
+		<property name="dropCollectionWrapperElement" value="true" />
+        <property name="arrayKeys">
+        	<list>
+        		<value>list</value>
+                <value>mbiles</value>
+            </list>  
+        </property>
+		<property name="serializeAsArray" value="true" />
+	</bean>
+	<jaxrs:server id="cxfServices" address="/">
+		<jaxrs:serviceBeans>
+			<ref bean="memberService" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="securityExceptionMapper" />
+			<ref bean="responseResolver" />
+			<ref bean="jsonProvider" />
+		</jaxrs:providers>
+		<jaxrs:extensionMappings>
+			<entry key="json" value="application/json; charset=utf-8" />
+			<entry key="xml" value="application/xml; charset=utf-8" />
+		</jaxrs:extensionMappings>
+        <jaxrs:inInterceptors>
+            <ref bean="baseCxfInterceptor" />
+         </jaxrs:inInterceptors>
+		<!--
+			<jaxrs:inInterceptors> <ref bean="authenticationInterceptor" />
+			</jaxrs:inInterceptors> <jaxrs:outInterceptors> <ref
+			bean="outLoggingInterceptor" /> </jaxrs:outInterceptors>
+		-->
+		<jaxrs:languageMappings>
+			<entry key="cn" value="cn-ZH" />
+		</jaxrs:languageMappings>
+	</jaxrs:server>
+
+	<bean id="securityExceptionMapper" class="com.electrombile.interceptor.SecurityExceptionMapper" />
+</beans>

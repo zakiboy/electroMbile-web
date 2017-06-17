@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.electrombile.dao.DealInfoDao">
+	<resultMap id="dealInfoResult" type="dealInfo">
+		<result property="dealId" column="deal_id" />
+		<result property="dealNo" column="deal_no" />
+		<result property="dealType" column="deal_type" />
+		<result property="dealDate" column="deal_date" />
+		<result property="dealMoney" column="deal_money" />
+		<result property="dealStatus" column="deal_status" />
+		<result property="orderNo" column="order_no" />
+	</resultMap>
+
+	<sql id="dealInfoWhere">
+		<if test="dealId != null">      	
+        <![CDATA[ deal_id like concat('%',#{dealId},'%') ]]>
+		</if>
+		<if test="dealNo != null">      	
+        <![CDATA[ deal_no like concat('%',#{dealNo},'%') ]]>
+		</if>
+		<if test="dealType != null">      	
+        <![CDATA[ deal_type like concat('%',#{dealType},'%') ]]>
+		</if>
+		<if test="dealDate != null">      	
+        <![CDATA[ deal_date like concat('%',#{dealDate},'%') ]]>
+		</if>
+		<if test="dealMoney != null">      	
+        <![CDATA[ deal_money like concat('%',#{dealMoney},'%') ]]>
+		</if>
+		<if test="dealStatus != null">      	
+        <![CDATA[ deal_status like concat('%',#{dealStatus},'%') ]]>
+		</if>
+		<if test="orderNo != null">      	
+        <![CDATA[ order_no like concat('%',#{orderNo},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="dealInfoColumn">
+		deal_id,deal_no,deal_type,deal_date,deal_money,deal_status,order_no
+  </sql>
+
+	<select id="loadDealInfo" resultMap="dealInfoResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="dealInfoColumn" />
+		from deal_info
+		where deal_iddeal_no=#{value}
+	</select>
+
+	<select id="queryList" resultMap="dealInfoResult"
+		parameterType="dealInfo">
+		select
+		<include refid="dealInfoColumn" />
+		from deal_info
+		<where>
+			<include refid="dealInfoWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by deal_iddeal_no desc 
+		</if> -->
+	</select>
+
+	<select id="queryPageList" resultMap="dealInfoResult"
+		parameterType="dealInfo">
+		select
+		<include refid="dealInfoColumn" />
+		from deal_info
+		<where>
+			<include refid="dealInfoWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by deal_iddeal_no desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="dealInfo">
+		select count(deal_iddeal_no) from deal_info
+		<where>
+			<include refid="dealInfoWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteDealInfo" parameterType="java.lang.Integer">
+		delete from
+		deal_info where deal_iddeal_no=#{value}
+  </delete>
+
+	<insert id="insertDealInfo" parameterType="dealInfo">
+		insert into deal_info (deal_iddeal_no
+		<if test="dealType != null">
+			,deal_type
+			</if>
+		<if test="dealDate != null">
+			,deal_date
+			</if>
+		<if test="dealMoney != null">
+			,deal_money
+			</if>
+		<if test="dealStatus != null">
+			,deal_status
+			</if>
+		<if test="orderNo != null">
+			,order_no
+			</if>
+		) values(#{dealIddealNo}
+		<if test="dealType != null">
+			,#{dealType}
+			</if>
+		<if test="dealDate != null">
+			,#{dealDate}
+			</if>
+		<if test="dealMoney != null">
+			,#{dealMoney}
+			</if>
+		<if test="dealStatus != null">
+			,#{dealStatus}
+			</if>
+		<if test="orderNo != null">
+			,#{orderNo}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="dealNo">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateDealInfo" parameterType="dealInfo">
+		update deal_info set deal_iddeal_no=#{dealNo}
+		<if test="dealType != null">
+			,deal_type=#{dealType}
+			</if>
+		<if test="dealDate != null">
+			,deal_date=#{dealDate}
+			</if>
+		<if test="dealMoney != null">
+			,deal_money=#{dealMoney}
+			</if>
+		<if test="dealStatus != null">
+			,deal_status=#{dealStatus}
+			</if>
+		<if test="orderNo != null">
+			,order_no=#{orderNo}
+			</if>
+		where deal_iddeal_no=#{dealNo}
+	</update>
+
+</mapper>

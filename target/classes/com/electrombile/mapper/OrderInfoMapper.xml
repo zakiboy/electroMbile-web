@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.OrderInfoDao">
+	<resultMap id="orderInfoResult" type="orderInfo">
+		<result property="orderId" column="order_id" />
+		<result property="orderNo" column="order_no" />
+		<result property="orderType" column="order_type" />
+		<result property="orderMoney" column="order_money" />
+		<result property="orderDate" column="order_date" />
+		<result property="orderChannel" column="order_channel" />
+		<result property="orderStatus" column="order_status" />
+		<result property="memberId" column="member_id" />
+	</resultMap>
+
+	<sql id="orderInfoWhere">
+		<if test="orderId != null">      	
+        <![CDATA[ order_id like concat('%',#{orderId},'%') ]]>
+		</if>
+		<if test="orderNo != null">      	
+        <![CDATA[ order_no like concat('%',#{orderNo},'%') ]]>
+		</if>
+		<if test="orderType != null">      	
+        <![CDATA[ order_type like concat('%',#{orderType},'%') ]]>
+		</if>
+		<if test="orderMoney != null">      	
+        <![CDATA[ order_money like concat('%',#{orderMoney},'%') ]]>
+		</if>
+		<if test="orderDate != null">      	
+        <![CDATA[ order_date like concat('%',#{orderDate},'%') ]]>
+		</if>
+		<if test="orderChannel != null">      	
+        <![CDATA[ order_channel like concat('%',#{orderChannel},'%') ]]>
+		</if>
+		<if test="orderStatus != null">      	
+        <![CDATA[ order_status like concat('%',#{orderStatus},'%') ]]>
+		</if>
+		<if test="memberId != null">      	
+        <![CDATA[ member_id like concat('%',#{memberId},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="orderInfoColumn">
+		order_id,order_no,order_type,order_money,order_date,order_channel,order_status,member_id
+  </sql>
+
+	<select id="loadOrderInfo" resultMap="orderInfoResult"
+		parameterType="java.lang.Integer">
+		SELECT	a.order_id,a.order_no,a.order_type,a.order_money,a.order_date,a.order_channel,a.order_status,
+		a.member_id,b.member_name AS memberName FROM order_info a,member_info b WHERE a.member_id = b.member_id 
+		AND a.order_status = 0 AND order_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="orderInfoResult"
+		parameterType="orderInfo">
+		SELECT a.order_id,a.order_no,a.order_type,a.order_money,a.order_date,a.order_channel,a.order_status,   
+		a.member_id,b.member_name AS memberName FROM order_info a,member_info b WHERE a.member_id = b.member_id 
+		AND a.order_status = 0 AND b.member_status = 0
+<!--		<where>
+			<include refid="orderInfoWhere" />
+		</where>
+ 		<if test="orderBy != null">
+			order by order_id desc 
+		</if> -->
+	</select>
+
+	<select id="queryPageList" resultMap="orderInfoResult"
+		parameterType="orderInfo">
+		select
+		<include refid="orderInfoColumn" />
+		from order_info
+		<where>
+			<include refid="orderInfoWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by order_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="orderInfo">
+		select count(order_id) from order_info
+		<where>
+			<include refid="orderInfoWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteOrderInfo" parameterType="java.lang.Integer">
+		delete from
+		order_info where order_id=#{value}
+  </delete>
+
+	<insert id="insertOrderInfo" parameterType="orderInfo">
+		insert into order_info (order_ido
+		<if test="orderType != null">
+			,order_type
+			</if>
+		<if test="orderMoney != null">
+			,order_money
+			</if>
+		<if test="orderDate != null">
+			,order_date
+			</if>
+		<if test="orderChannel != null">
+			,order_channel
+			</if>
+		<if test="orderStatus != null">
+			,order_status
+			</if>
+		<if test="memberId != null">
+			,member_id
+			</if>
+		) values(#{orderIdorderNo}
+		<if test="orderType != null">
+			,#{orderType}
+			</if>
+		<if test="orderMoney != null">
+			,#{orderMoney}
+			</if>
+		<if test="orderDate != null">
+			,#{orderDate}
+			</if>
+		<if test="orderChannel != null">
+			,#{orderChannel}
+			</if>
+		<if test="orderStatus != null">
+			,#{orderStatus}
+			</if>
+		<if test="memberId != null">
+			,#{memberId}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="orderNo">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateOrderInfo" parameterType="orderInfo">
+		update order_info set order_no=#{orderNo}
+		<if test="orderType != null">
+			,order_type=#{orderType}
+			</if>
+<!-- 		<if test="orderMoney != null">
+			,order_money=#{orderMoney}
+			</if>
+		<if test="orderDate != null">
+			,order_date=#{orderDate}
+			</if> -->
+		<if test="orderChannel != null">
+			,order_channel=#{orderChannel}
+			</if>
+		<if test="orderStatus != null">
+			,order_status=#{orderStatus}
+			</if>
+<!-- 		<if test="memberId != null">
+			,member_id=#{memberId}
+			</if> -->
+		where order_id=#{orderId}
+	</update>
+
+</mapper>

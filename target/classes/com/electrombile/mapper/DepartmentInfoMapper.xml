@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.DepartmentInfoDao">
+	<resultMap id="departmentInfoResult" type="departmentInfo">
+		<result property="departmentId" column="department_id" />
+		<result property="departmentName" column="department_name" />
+		<result property="departmentNo" column="department_no" />
+		<result property="departmentStatus" column="department_status" />
+	</resultMap>
+
+	<sql id="departmentInfoWhere">
+		<if test="departmentId != null">      	
+        <![CDATA[ department_id like concat('%',#{departmentId},'%') ]]>
+		</if>
+		<if test="departmentName != null">      	
+        <![CDATA[ department_name like concat('%',#{departmentName},'%') ]]>
+		</if>
+		<if test="departmentNo != null">      	
+        <![CDATA[ department_no like concat('%',#{departmentNo},'%') ]]>
+		</if>
+		<if test="departmentStatus != null">      	
+        <![CDATA[ department_status like concat('%',#{departmentStatus},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="departmentInfoColumn">
+		department_id,department_name,department_no,department_status
+  </sql>
+
+	<select id="loadDepartmentInfo" resultMap="departmentInfoResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="departmentInfoColumn" />
+		from department_info
+		where department_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="departmentInfoResult"
+		parameterType="departmentInfo">
+		select
+		<include refid="departmentInfoColumn" />
+		from department_info
+		<!--<where>
+			<include refid="departmentInfoWhere" />
+		</where>
+ 		<if test="orderBy != null">
+			order by department_id desc 
+		</if> -->
+	</select>
+
+	<select id="queryPageList" resultMap="departmentInfoResult"
+		parameterType="departmentInfo">
+		select
+		<include refid="departmentInfoColumn" />
+		from department_info
+		<where>
+			<include refid="departmentInfoWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by department_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="departmentInfo">
+		select count(department_id) from department_info
+		<where>
+			<include refid="departmentInfoWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteDepartmentInfo" parameterType="java.lang.Integer">
+		delete from
+		department_info where department_id=#{value}
+  </delete>
+
+	<insert id="insertDepartmentInfo" parameterType="departmentInfo">
+		insert into department_info (department_id
+		<if test="departmentName != null">
+			,department_name
+			</if>
+		<if test="departmentNo != null">
+			,department_no
+			</if>
+		<if test="departmentStatus != null">
+			,department_status
+			</if>
+		) values(#{departmentId}
+		<if test="departmentName != null">
+			,#{departmentName}
+			</if>
+		<if test="departmentNo != null">
+			,#{departmentNo}
+			</if>
+		<if test="departmentStatus != null">
+			,#{departmentStatus}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="departmentId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateDepartmentInfo" parameterType="departmentInfo">
+		update department_info set department_id=#{departmentId}
+		<if test="departmentName != null">
+			,department_name=#{departmentName}
+			</if>
+		<if test="departmentNo != null">
+			,department_no=#{departmentNo}
+			</if>
+		<if test="departmentStatus != null">
+			,department_status=#{departmentStatus}
+			</if>
+		where department_id=#{departmentId}
+	</update>
+
+</mapper>

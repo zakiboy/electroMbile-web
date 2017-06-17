@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.MemberInfoDao">
+	<resultMap id="memberInfoResult" type="memberInfo">
+		<result property="memberId" column="member_id" />
+		<result property="nickname" column="nickname" />
+		<result property="openid" column="openid" />
+		<result property="sex" column="sex" />
+		<result property="city" column="city" />
+		<result property="country" column="country" />
+		<result property="province" column="province" />
+		<result property="subscribe" column="subscribe" />
+		<result property="language" column="language" />
+		<result property="headimgurl" column="headimgurl" />
+		<result property="subscribeTime" jdbcType="TIMESTAMP" column="subscribe_time" />
+		<result property="unionid" column="unionid" />
+		<result property="remark" column="remark" />
+		<result property="groupid" column="groupid" />
+		<result property="tagidList" column="tagid_list" />
+		<result property="name" column="name" />
+		<result property="phone" column="phone" />
+		<result property="email" column="email" />
+		<result property="birthday" jdbcType="TIMESTAMP" column="birthday" />
+		<result property="adress" column="adress" />
+		<result property="status" column="status" />
+		<result property="createDate" jdbcType="TIMESTAMP" column="create_date" />
+	</resultMap>
+
+	<sql id="memberInfoWhere">
+		<if test="memberId != null">      	
+        <![CDATA[ member_id like concat('%',#{memberId},'%') ]]>
+		</if>
+		<if test="nickname != null">      	
+        <![CDATA[ and nickname like concat('%',#{nickname},'%') ]]>
+		</if>
+		<if test="openid != null">      	
+        <![CDATA[ and openid like concat('%',#{openid},'%') ]]>
+		</if>
+		<if test="sex != null">      	
+        <![CDATA[ and sex like concat('%',#{sex},'%') ]]>
+		</if>
+		<if test="city != null">      	
+        <![CDATA[ and city like concat('%',#{city},'%') ]]>
+		</if>
+		<if test="country != null">      	
+        <![CDATA[ and country like concat('%',#{country},'%') ]]>
+		</if>
+		<if test="province != null">      	
+        <![CDATA[ and province like concat('%',#{province},'%') ]]>
+		</if>
+		<if test="subscribe != null">      	
+        <![CDATA[ and subscribe like concat('%',#{subscribe},'%') ]]>
+		</if>
+		<if test="language != null">      	
+        <![CDATA[ and language like concat('%',#{language},'%') ]]>
+		</if>
+		<if test="headimgurl != null">      	
+        <![CDATA[ and headimgurl like concat('%',#{headimgurl},'%') ]]>
+		</if>
+		<if test="subscribeTime != null">      	
+        <![CDATA[ and subscribe_time like concat('%',#{subscribeTime,jdbcType="TIMESTAMP"},'%') ]]>
+		</if>
+		<if test="unionid != null">      	
+        <![CDATA[ and unionid like concat('%',#{unionid},'%') ]]>
+		</if>
+		<if test="remark != null">      	
+        <![CDATA[ and remark like concat('%',#{remark},'%') ]]>
+		</if>
+		<if test="groupid != null">      	
+        <![CDATA[ and groupid like concat('%',#{groupid},'%') ]]>
+		</if>
+		<if test="tagidList != null">      	
+        <![CDATA[ and tagid_list like concat('%',#{tagidList},'%') ]]>
+		</if>
+		<if test="name != null">      	
+        <![CDATA[ and name like concat('%',#{name},'%') ]]>
+		</if>
+		<if test="phone != null">      	
+        <![CDATA[ and phone like concat('%',#{phone},'%') ]]>
+		</if>
+		<if test="email != null">      	
+        <![CDATA[ and email like concat('%',#{email},'%') ]]>
+		</if>
+		<if test="birthday != null">      	
+        <![CDATA[ and birthday like concat('%',#{birthday,jdbcType="TIMESTAMP"},'%') ]]>
+		</if>
+		<if test="adress != null">      	
+        <![CDATA[ and adress like concat('%',#{adress},'%') ]]>
+		</if>
+		<if test="status != null">      	
+        <![CDATA[ and status like concat('%',#{status},'%') ]]>
+		</if>
+		<if test="createDate != null">      	
+        <![CDATA[ and create_date like concat('%',#{createDate,jdbcType="TIMESTAMP"},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="memberInfoColumn">
+		member_id,nickname,openid,sex,city,country,province,subscribe,language,headimgurl,subscribe_time,unionid,remark,
+		groupid,tagid_list,name,phone,email,birthday,adress,status,create_date
+  </sql>
+
+	<select id="loadMemberInfo" resultMap="memberInfoResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="memberInfoColumn" />
+		from member_info
+		where member_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="memberInfoResult"
+		parameterType="memberInfo">
+		select
+		<include refid="memberInfoColumn" />
+		from member_info
+		<where>
+			<include refid="memberInfoWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by member_id desc 
+		</if>
+	</select>
+
+	<select id="queryPageList" resultMap="memberInfoResult"
+		parameterType="memberInfo">
+		select
+		<include refid="memberInfoColumn" />
+		from member_info
+		<where>
+			<include refid="memberInfoWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by member_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if>
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="memberInfo">
+		select count(member_id) from member_info
+		<where>
+			<include refid="memberInfoWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteMemberInfo" parameterType="java.lang.Integer">
+		delete from
+		member_info where member_id=#{value}
+  </delete>
+
+	<insert id="insertMemberInfo" parameterType="memberInfo">
+		insert into member_info (
+		<if test="nickname != null">
+			nickname
+			</if>
+		<if test="openid != null">
+			,openid
+			</if>
+		<if test="sex != null">
+			,sex
+			</if>
+		<if test="city != null">
+			,city
+			</if>
+		<if test="country != null">
+			,country
+			</if>
+		<if test="province != null">
+			,province
+			</if>
+		<if test="subscribe != null">
+			,subscribe
+			</if>
+		<if test="language != null">
+			,language
+			</if>
+		<if test="headimgurl != null">
+			,headimgurl
+			</if>
+		<if test="subscribeTime != null">
+			,subscribe_time
+			</if>
+		<if test="unionid != null">
+			,unionid
+			</if>
+		<if test="remark != null">
+			,remark
+			</if>
+		<if test="groupid != null">
+			,groupid
+			</if>
+		<if test="tagidList != null">
+			,tagid_list
+			</if>
+		<if test="name != null">
+			,name
+			</if>
+		<if test="phone != null">
+			,phone
+			</if>
+		<if test="email != null">
+			,email
+			</if>
+		<if test="birthday != null">
+			,birthday
+			</if>
+		<if test="adress != null">
+			,adress
+			</if>
+		<if test="status != null">
+			,status
+			</if>
+		<if test="createDate != null">
+			,create_date
+			</if>
+		) values(
+		<if test="nickname != null">
+			#{nickname}
+			</if>
+		<if test="openid != null">
+			,#{openid}
+			</if>
+		<if test="sex != null">
+			,#{sex}
+			</if>
+		<if test="city != null">
+			,#{city}
+			</if>
+		<if test="country != null">
+			,#{country}
+			</if>
+		<if test="province != null">
+			,#{province}
+			</if>
+		<if test="subscribe != null">
+			,#{subscribe}
+			</if>
+		<if test="language != null">
+			,#{language}
+			</if>
+		<if test="headimgurl != null">
+			,#{headimgurl}
+			</if>
+		<if test="subscribeTime != null">
+			,#{subscribeTime,jdbcType="TIMESTAMP"}
+			</if>
+		<if test="unionid != null">
+			,#{unionid}
+			</if>
+		<if test="remark != null">
+			,#{remark}
+			</if>
+		<if test="groupid != null">
+			,#{groupid}
+			</if>
+		<if test="tagidList != null">
+			,#{tagidList}
+			</if>
+		<if test="name != null">
+			,#{name}
+			</if>
+		<if test="phone != null">
+			,#{phone}
+			</if>
+		<if test="email != null">
+			,#{email}
+			</if>
+		<if test="birthday != null">
+			,#{birthday,jdbcType="TIMESTAMP"}
+			</if>
+		<if test="adress != null">
+			,#{adress}
+			</if>
+		<if test="status != null">
+			,#{status}
+			</if>
+		<if test="createDate != null">
+			,#{createDate,jdbcType="TIMESTAMP"}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="memberId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateMemberInfo" parameterType="memberInfo">
+		update member_info set 
+		<if test="nickname != null">
+			,nickname=#{nickname}
+			</if>
+		<if test="openid != null">
+			,openid=#{openid}
+			</if>
+		<if test="sex != null">
+			,sex=#{sex}
+			</if>
+		<if test="city != null">
+			,city=#{city}
+			</if>
+		<if test="country != null">
+			,country=#{country}
+			</if>
+		<if test="province != null">
+			,province=#{province}
+			</if>
+		<if test="subscribe != null">
+			,subscribe=#{subscribe}
+			</if>
+		<if test="language != null">
+			,language=#{language}
+			</if>
+		<if test="headimgurl != null">
+			,headimgurl=#{headimgurl}
+			</if>
+		<if test="subscribeTime != null">
+			,subscribe_time=#{subscribeTime,jdbcType="TIMESTAMP"}
+			</if>
+		<if test="unionid != null">
+			,unionid=#{unionid}
+			</if>
+		<if test="remark != null">
+			,remark=#{remark}
+			</if>
+		<if test="groupid != null">
+			,groupid=#{groupid}
+			</if>
+		<if test="tagidList != null">
+			,tagid_list=#{tagidList}
+			</if>
+		<if test="name != null">
+			,name=#{name}
+			</if>
+		<if test="phone != null">
+			,phone=#{phone}
+			</if>
+		<if test="email != null">
+			,email=#{email}
+			</if>
+		<if test="birthday != null">
+			,birthday=#{birthday,jdbcType="TIMESTAMP"}
+			</if>
+		<if test="adress != null">
+			,adress=#{adress}
+			</if>
+		<if test="status != null">
+			,adress=#{status}
+			</if>
+		<if test="createDate != null">
+			,createDate=#{createDate,jdbcType="TIMESTAMP"}
+			</if>	
+		where member_id=#{memberId}
+	</update>
+</mapper>

@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.ElectrombileInfoDao">
+	<resultMap id="electrombileInfoResult" type="electrombileInfo">
+		<result property="electrombileId" column="electrombile_id" />
+		<result property="electrombileNo" column="electrombile_no" />
+		<result property="electrombileStatus" column="electrombile_status" />
+		<result property="electrombileType" column="electrombile_type" />
+		<result property="electrombileLongitude" column="electrombile_longitude" />
+		<result property="electrombileLatitude" column="electrombile_latitude" />
+		<result property="electrombileCoordinate" column="electrombile_coordinate" />
+		<result property="electrombileElectrical" column="electrombile_electrical" />
+		<result property="electrombileElectric" column="electrombile_electric" />
+		<result property="electrombileAlarmStatus" column="electrombile_alarm_status" />
+		<result property="electrombileRepairStatus" column="electrombile_repair_status" />
+	</resultMap>
+
+	<sql id="electrombileInfoWhere">
+		<if test="electrombileId != null">      	
+        <![CDATA[ electrombile_id like concat('%',#{electrombileId},'%') ]]>
+		</if>
+		<if test="electrombileNo != null">      	
+        <![CDATA[ electrombile_no like concat('%',#{electrombileNo},'%') ]]>
+		</if>
+		<if test="electrombileStatus != null">      	
+        <![CDATA[ electrombile_status like concat('%',#{electrombileStatus},'%') ]]>
+		</if>
+		<if test="electrombileType != null">      	
+        <![CDATA[ electrombile_type like concat('%',#{electrombileType},'%') ]]>
+		</if>
+		<if test="electrombileLongitude != null">      	
+        <![CDATA[ electrombile_longitude like concat('%',#{electrombileLongitude},'%') ]]>
+		</if>
+		<if test="electrombileLatitude != null">      	
+        <![CDATA[ electrombile_latitude like concat('%',#{electrombileLatitude},'%') ]]>
+		</if>
+		<if test="electrombileElectrical != null">      	
+        <![CDATA[ electrombile_electrical like concat('%',#{electrombileElectrical},'%') ]]>
+		</if>
+		<if test="electrombileElectric != null">      	
+        <![CDATA[ electrombile_electric like concat('%',#{electrombileElectric},'%') ]]>
+		</if>
+		<if test="electrombileAlarmStatus != null">      	
+        <![CDATA[ electrombile_alarm_status like concat('%',#{electrombileAlarmStatus},'%') ]]>
+		</if>
+		<if test="electrombileRepairStatus != null">      	
+        <![CDATA[ electrombile_repair_status like concat('%',#{electrombileRepairStatus},'%') ]]>
+		</if>
+	</sql>
+	
+	<sql id="pageWhere">
+		<if test="electrombileNo != null">      	
+        <![CDATA[ electrombile_no = #{electrombileNo}]]>
+		</if>
+		<if test="electrombileElectric != null">      	
+        <![CDATA[and electrombile_electric <= #{electrombileElectric} ]]>
+		</if>
+		<if test="electrombileType != null">      	
+        <![CDATA[and electrombile_type = #{electrombileType} ]]>
+		</if>
+	</sql>
+
+	<sql id="electrombileInfoColumn">
+		electrombile_id,electrombile_no,electrombile_status,electrombile_type,electrombile_longitude,electrombile_latitude,
+		electrombile_electrical,electrombile_electric,electrombile_alarm_status,electrombile_repair_status
+  </sql>
+
+	<select id="loadElectrombileInfo" resultMap="electrombileInfoResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="electrombileInfoColumn" />
+		from electrombile_info
+		where electrombile_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="electrombileInfoResult"
+		parameterType="electrombileInfo">
+		select
+		<include refid="electrombileInfoColumn" />
+		from electrombile_info
+		<where>
+			<include refid="electrombileInfoWhere" />
+		</where>
+ 		<if test="orderBy != null">
+			order by electrombile_id desc 
+		</if>
+	</select>
+
+	<select id="queryScopeMbilePageList" resultMap="electrombileInfoResult"
+		parameterType="electrombileInfo">
+		SELECT * FROM electrombile_info WHERE
+		electrombile_latitude > (#{electrombileLatitude}-0.01)
+	    AND electrombile_latitude  &lt; (#{electrombileLatitude}+0.01)
+	    AND electrombile_longitude > (#{electrombileLongitude}-0.01)
+	    AND electrombile_longitude  &lt; (#{electrombileLongitude}+0.01)
+		AND electrombile_repair_status = 0 AND electrombile_type = 0 
+		AND electrombile_alarm_status = 0 AND electrombile_status = 0
+		ORDER BY ACOS(SIN((#{electrombileLatitude} * 3.1415) / 180 ) *SIN((electrombile_latitude * 3.1415) / 180 ) + 
+		COS((#{electrombileLatitude} * 3.1415) / 180 )*COS((electrombile_latitude * 3.1415) / 180 )*COS((#{electrombileLongitude}* 3.1415)/180 - 
+		(electrombile_longitude * 3.1415) / 180 ))*6380 ASC LIMIT 10
+	</select>
+
+	<select id="queryPageList" resultMap="electrombileInfoResult"
+		parameterType="electrombileInfo">
+		select
+		<include refid="electrombileInfoColumn" />
+		from electrombile_info
+		<where>
+			<include refid="pageWhere" />
+		</where>
+ 		<if test="orderBy != null">
+			order by electrombile_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #{firstRow},#{rowSize} ]]>
+		</if>
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="electrombileInfo">
+		select count(electrombile_id) from electrombile_info
+	</select>
+
+	<delete id="deleteElectrombileInfo" parameterType="java.lang.Integer">
+		delete from
+		electrombile_info where electrombile_id=#{value}
+  </delete>
+
+	<insert id="insertElectrombileInfo" parameterType="electrombileInfo">
+		insert into electrombile_info (electrombile_id
+		<if test="electrombileStatus != null">
+			,electrombile_status
+			</if>
+		<if test="electrombileType != null">
+			,electrombile_type
+			</if>
+		<if test="electrombileLongitude != null">
+			,electrombile_longitude
+			</if>
+		<if test="electrombileLatitude != null">
+			,electrombile_latitude
+			</if>
+		<if test="electrombileElectrical != null">
+			,electrombile_electrical
+			</if>
+		<if test="electrombileElectric != null">
+			,electrombile_electric
+			</if>
+		<if test="electrombileAlarmStatus != null">
+			,electrombile_alarm_status
+			</if>
+		<if test="electrombileRepairStatus != null">
+			,electrombile_repair_status
+			</if>
+		) values(#{electrombileId}
+		<if test="electrombileStatus != null">
+			,#{electrombileStatus}
+			</if>
+		<if test="electrombileType != null">
+			,#{electrombileType}
+			</if>
+		<if test="electrombileLongitude != null">
+			,#{electrombileLongitude}
+			</if>
+		<if test="electrombileLatitude != null">
+			,#{electrombileLatitude}
+			</if>
+		<if test="electrombileElectrical != null">
+			,#{electrombileElectrical}
+			</if>
+		<if test="electrombileElectric != null">
+			,#{electrombileElectric}
+			</if>
+		<if test="electrombileAlarmStatus != null">
+			,#{electrombileAlarmStatus}
+			</if>
+		<if test="electrombileRepairStatus != null">
+			,#{electrombileRepairStatus}
+			</if>			
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="electrombileNo">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateElectrombileInfo" parameterType="electrombileInfo">
+		update electrombile_info set electrombile_id=#{electrombileId}
+		<if test="electrombileStatus != null">
+			,electrombile_status=#{electrombileStatus}
+			</if>
+		<if test="electrombileType != null">
+			,electrombile_type=#{electrombileType}
+			</if>
+		<if test="electrombileLongitude != null">
+			,electrombile_longitude=#{electrombileLongitude}
+			</if>
+		<if test="electrombileLatitude != null">
+			,electrombile_latitude=#{electrombileLatitude}
+			</if>
+		<if test="electrombileElectrical != null">
+			,electrombile_electrical=#{electrombileElectrical}
+			</if>
+		<if test="electrombileElectric != null">
+			,electrombile_electric=#{electrombileElectric}
+			</if>
+		<if test="electrombileAlarmStatus != null">
+			,electrombile_alarm_status=#{electrombileAlarmStatus}
+			</if>
+		<if test="electrombileRepairStatus != null">
+			,electrombile_repair_status=#{electrombileRepairStatus}
+			</if>
+		where electrombile_id=#{electrombileId}
+	</update>
+
+</mapper>

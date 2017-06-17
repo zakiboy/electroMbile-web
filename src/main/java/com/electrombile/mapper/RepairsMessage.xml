@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.RepairsMessageDao">
+	<resultMap id="repairsMessageResult" type="repairsMessage">
+		<result property="reparirsId" column="reparirs_id" />
+		<result property="reparirsType" column="reparirs_type" />
+		<result property="reparirsDescribe" column="reparirs_describe" />
+		<result property="reparirsResult" column="reparirs_result" />
+		<result property="departmentId" column="department_id" />
+		<result property="reparirsElectric" column="reparirs_electric" />
+		<result property="memberOpenId" column="member_openId" />
+		<result property="reparirsDate" column="reparirs_date" />
+		<result property="userId" column="user_id" />
+		<result property="reparirsStatus" column="reparirs_status" />
+		<result property="remark1" column="remark1" />
+		<result property="userName" column="user_name" />
+		<result property="electrombileCoordinate" column="electrombile_coordinate" />
+		<result property="electrombileElectric" column="electrombile_electric" />
+		<result property="electrombileNo" column="electrombile_no" />
+	</resultMap>
+
+	<sql id="repairsMessageWhere">
+		<if test="reparirsId != null">      	
+        <![CDATA[ reparirs_id like concat('%',#{reparirsId},'%') ]]>
+		</if>
+		<if test="reparirsType != null">      	
+        <![CDATA[ reparirs_type like concat('%',#{reparirsType},'%') ]]>
+		</if>
+		<if test="reparirsDescribe != null">      	
+        <![CDATA[ reparirs_describe like concat('%',#{reparirsDescribe},'%') ]]>
+		</if>
+		<if test="reparirsResult != null">      	
+        <![CDATA[ reparirs_result like concat('%',#{reparirsResult},'%') ]]>
+		</if>
+		<if test="departmentId != null">      	
+        <![CDATA[ department_id like concat('%',#{departmentId},'%') ]]>
+		</if>
+		<if test="reparirsElectric != null">      	
+        <![CDATA[ reparirs_electric like concat('%',#{reparirsElectric},'%') ]]>
+		</if>
+		<if test="memberOpenId != null">      	
+        <![CDATA[ member_openId like concat('%',#{memberOpenId},'%') ]]>
+		</if>
+		<if test="reparirsDate != null">      	
+        <![CDATA[ reparirs_date like concat('%',#{reparirsDate},'%') ]]>
+		</if>
+		<if test="userId != null">      	
+        <![CDATA[ user_id like concat('%',#{userId},'%') ]]>
+		</if>
+		<if test="reparirsStatus != null">      	
+        <![CDATA[ reparirs_status like concat('%',#{reparirsStatus},'%') ]]>
+		</if>
+		<if test="remark1 != null">      	
+        <![CDATA[ remark1 like concat('%',#{remark1},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="repairsMessageColumn">
+		reparirs_id,reparirs_type,reparirs_describe,reparirs_result,department_id,reparirs_electric,member_openId,
+		reparirs_date,user_id,reparirs_status,remark1
+  </sql>
+
+	<select id="loadRepairsMessage" resultMap="repairsMessageResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="repairsMessageColumn" />
+		from repairs_message
+		where reparirs_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="repairsMessageResult"
+		parameterType="repairsMessage">
+		select
+		<include refid="repairsMessageColumn" />
+		from repairs_message
+		<where>
+			<include refid="repairsMessageWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by reparirs_id desc 
+		</if>
+	</select>
+
+	<select id="queryPageList" resultMap="repairsMessageResult"
+		parameterType="repairsMessage">
+		select
+		r.reparirs_id,r.reparirs_type,r.reparirs_describe,r.reparirs_result,r.department_id,r.reparirs_electric,r.member_openId,
+		r.reparirs_date,r.user_id,r.reparirs_status,r.remark1,u.user_name,e.electrombile_coordinate,e.electrombile_electric,e.electrombile_no 
+		from repairs_message r,user_info u,electrombile_info e 
+		where a.electrombile_id = e.electrombile_id and r.user_id = u.user_id
+<!-- 		<where>
+			<include refid="repairsMessageWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by reparirs_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="repairsMessage">
+		select count(reparirs_id) from repairs_message
+		<where>
+			<include refid="repairsMessageWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteRepairsMessage" parameterType="java.lang.Integer">
+		delete from
+		repairs_message where reparirs_id=#{value}
+  </delete>
+
+	<insert id="insertRepairsMessage" parameterType="repairsMessage">
+		insert into repairs_message (reparirs_id
+		<if test="reparirsType != null">
+			,reparirs_type
+			</if>
+		<if test="reparirsDescribe != null">
+			,reparirs_describe
+			</if>
+		<if test="reparirsResult != null">
+			,reparirs_result
+			</if>
+		<if test="departmentId != null">
+			,department_id
+			</if>
+		<if test="reparirsElectric != null">
+			,reparirs_electric
+			</if>
+		<if test="memberOpenId != null">
+			,member_openId
+			</if>
+		<if test="reparirsDate != null">
+			,reparirs_date
+			</if>
+		<if test="userId != null">
+			,user_id
+			</if>
+		<if test="reparirsStatus != null">
+			,reparirs_status
+			</if>
+		<if test="remark1 != null">
+			,remark1
+			</if>
+		) values(#{reparirsId}
+		<if test="reparirsType != null">
+			,#{reparirsType}
+			</if>
+		<if test="reparirsDescribe != null">
+			,#{reparirsDescribe}
+			</if>
+		<if test="reparirsResult != null">
+			,#{reparirsResult}
+			</if>
+		<if test="departmentId != null">
+			,#{departmentId}
+			</if>
+		<if test="reparirsElectric != null">
+			,#{reparirsElectric}
+			</if>
+		<if test="memberOpenId != null">
+			,#{memberOpenId}
+			</if>
+		<if test="reparirsDate != null">
+			,#{reparirsDate}
+			</if>
+		<if test="userId != null">
+			,#{userId}
+			</if>
+		<if test="reparirsStatus != null">
+			,#{reparirsStatus}
+			</if>
+		<if test="remark1 != null">
+			,#{remark1}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="reparirsId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateRepairsMessage" parameterType="repairsMessage">
+		update repairs_message set reparirs_id=#{reparirsId}
+		<if test="reparirsType != null">
+			,reparirs_type=#{reparirsType}
+			</if>
+		<if test="reparirsDescribe != null">
+			,reparirs_describe=#{reparirsDescribe}
+			</if>
+		<if test="reparirsResult != null">
+			,reparirs_result=#{reparirsResult}
+			</if>
+		<if test="departmentId != null">
+			,department_id=#{departmentId}
+			</if>
+		<if test="reparirsElectric != null">
+			,reparirs_electric=#{reparirsElectric}
+			</if>
+		<if test="memberOpenId != null">
+			,member_openId=#{memberOpenId}
+			</if>
+		<if test="reparirsDate != null">
+			,reparirs_date=#{reparirsDate}
+			</if>
+		<if test="userId != null">
+			,user_id=#{userId}
+			</if>
+		<if test="reparirsStatus != null">
+			,reparirs_status=#{reparirsStatus}
+			</if>
+		<if test="remark1 != null">
+			,remark1=#{remark1}
+			</if>
+		where reparirs_id=#{reparirsId}
+	</update>
+
+</mapper>

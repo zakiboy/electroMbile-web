@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.RidingRecordDao">
+	<resultMap id="ridingRecordResult" type="ridingRecord">
+		<result property="ridingId" column="riding_id" />
+		<result property="memberOpenId" column="member_open_id" />
+		<result property="departmentId" column="department_id" />
+		<result property="ridingStartDate" column="riding_start_date" />
+		<result property="ridingEndDate" column="riding_end_date" />
+		<result property="ridingStart" column="riding_start" />
+		<result property="ridingEnd" column="riding_end" />
+		<result property="remark" column="remark" />
+		<result property="remark1" column="remark1" />
+	</resultMap>
+
+	<sql id="ridingRecordWhere">
+		<if test="ridingId != null">      	
+        <![CDATA[ riding_id like concat('%',#{ridingId},'%') ]]>
+		</if>
+		<if test="memberOpenId != null">      	
+        <![CDATA[ member_open_id like concat('%',#{memberOpenId},'%') ]]>
+		</if>
+		<if test="departmentId != null">      	
+        <![CDATA[ department_id like concat('%',#{departmentId},'%') ]]>
+		</if>
+		<if test="ridingStartDate != null">      	
+        <![CDATA[ riding_start_date like concat('%',#{ridingStartDate},'%') ]]>
+		</if>
+		<if test="ridingEndDate != null">      	
+        <![CDATA[ riding_end_date like concat('%',#{ridingEndDate},'%') ]]>
+		</if>
+		<if test="ridingStart != null">      	
+        <![CDATA[ riding_start like concat('%',#{ridingStart},'%') ]]>
+		</if>
+		<if test="ridingEnd != null">      	
+        <![CDATA[ riding_end like concat('%',#{ridingEnd},'%') ]]>
+		</if>
+		<if test="remark != null">      	
+        <![CDATA[ remark like concat('%',#{remark},'%') ]]>
+		</if>
+		<if test="remark1 != null">      	
+        <![CDATA[ remark1 like concat('%',#{remark1},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="ridingRecordColumn">
+		riding_id,member_open_id,department_id,riding_start_date,riding_end_date,riding_start,riding_end,remark,remark1
+  </sql>
+
+	<select id="loadRidingRecord" resultMap="ridingRecordResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="ridingRecordColumn" />
+		from riding_record
+		where riding_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="ridingRecordResult"
+		parameterType="ridingRecord">
+		select
+		<include refid="ridingRecordColumn" />
+		from riding_record
+		<where>
+			<include refid="ridingRecordWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by riding_id desc 
+		</if>
+	</select>
+
+	<select id="queryPageList" resultMap="ridingRecordResult"
+		parameterType="ridingRecord">
+		select
+		<include refid="ridingRecordColumn" />
+		from riding_record
+		<where>
+			<include refid="ridingRecordWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by riding_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if>
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="ridingRecord">
+		select count(riding_id) from riding_record
+		<where>
+			<include refid="ridingRecordWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteRidingRecord" parameterType="java.lang.Integer">
+		delete from
+		riding_record where riding_id=#{value}
+  </delete>
+
+	<insert id="insertRidingRecord" parameterType="ridingRecord">
+		insert into riding_record (riding_id
+		<if test="memberOpenId != null">
+			,member_open_id
+			</if>
+		<if test="departmentId != null">
+			,department_id
+			</if>
+		<if test="ridingStartDate != null">
+			,riding_start_date
+			</if>
+		<if test="ridingEndDate != null">
+			,riding_end_date
+			</if>
+		<if test="ridingStart != null">
+			,riding_start
+			</if>
+		<if test="ridingEnd != null">
+			,riding_end
+			</if>
+		<if test="remark != null">
+			,remark
+			</if>
+		<if test="remark1 != null">
+			,remark1
+			</if>
+		) values(#{ridingId}
+		<if test="memberOpenId != null">
+			,#{memberOpenId}
+			</if>
+		<if test="departmentId != null">
+			,#{departmentId}
+			</if>
+		<if test="ridingStartDate != null">
+			,#{ridingStartDate}
+			</if>
+		<if test="ridingEndDate != null">
+			,#{ridingEndDate}
+			</if>
+		<if test="ridingStart != null">
+			,#{ridingStart}
+			</if>
+		<if test="ridingEnd != null">
+			,#{ridingEnd}
+			</if>
+		<if test="remark != null">
+			,#{remark}
+			</if>
+		<if test="remark1 != null">
+			,#{remark1}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="ridingId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateRidingRecord" parameterType="ridingRecord">
+		update riding_record set riding_id=#{ridingId}
+		<if test="memberOpenId != null">
+			,member_open_id=#{memberOpenId}
+			</if>
+		<if test="departmentId != null">
+			,department_id=#{departmentId}
+			</if>
+		<if test="ridingStartDate != null">
+			,riding_start_date=#{ridingStartDate}
+			</if>
+		<if test="ridingEndDate != null">
+			,riding_end_date=#{ridingEndDate}
+			</if>
+		<if test="ridingStart != null">
+			,riding_start=#{ridingStart}
+			</if>
+		<if test="ridingEnd != null">
+			,riding_end=#{ridingEnd}
+			</if>
+		<if test="remark != null">
+			,remark=#{remark}
+			</if>
+		<if test="remark1 != null">
+			,remark1=#{remark1}
+			</if>
+		where riding_id=#{ridingId}
+	</update>
+
+</mapper>

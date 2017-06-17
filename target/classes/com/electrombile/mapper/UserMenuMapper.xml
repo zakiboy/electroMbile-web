@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.UserMenuDao">
+	<resultMap id="userMenuResult" type="userMenu">
+		<result property="userId" column="user_id" />
+		<result property="menuId" column="menu_id" />
+		<result property="menuUrl" column="menu_url" />
+		<result property="remark1" column="remark1" />
+		<result property="remark2" column="remark2" />
+	</resultMap>
+
+	<sql id="userMenuWhere">
+		<if test="userId != null">      	
+        <![CDATA[ user_id like concat('%',#{userId},'%') ]]>
+		</if>
+		<if test="menuId != null">      	
+        <![CDATA[ menu_id like concat('%',#{menuId},'%') ]]>
+		</if>
+		<if test="menuUrl != null">      	
+        <![CDATA[ menu_url like concat('%',#{menuUrl},'%') ]]>
+		</if>
+		<if test="remark1 != null">      	
+        <![CDATA[ remark1 like concat('%',#{remark1},'%') ]]>
+		</if>
+		<if test="remark2 != null">      	
+        <![CDATA[ remark2 like concat('%',#{remark2},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="userMenuColumn">
+		user_id,menu_id,menu_url,remark1,remark2
+  </sql>
+
+	<select id="loadUserMenu" resultMap="userMenuResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="userMenuColumn" />
+		from user_menu
+		where user_id = #{value}
+	</select>
+
+	<select id="queryList" resultMap="userMenuResult"
+		parameterType="userMenu">
+		select
+		<include refid="userMenuColumn" />
+		from user_menu
+<!-- 		<where>
+			<include refid="userMenuWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by  desc 
+		</if> -->
+	</select>
+	
+	<select id="queryListByUserId" resultMap="userMenuResult"
+		parameterType="java.lang.Integer">
+		SELECT a.menu_id,b.rule_url AS menu_url,a.user_id 
+		FROM user_menu a,rule_info b WHERE a.menu_id = b.rule_id AND a.user_id = #{value}
+<!-- 		<where>
+			<include refid="userMenuWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by  desc 
+		</if> -->
+	</select>	
+	
+	
+	<select id="queryCheckMenuByUserId" resultMap="userMenuResult"
+		parameterType="java.lang.Integer">
+		SELECT a.menu_id,b.rule_url_menu AS menu_url,a.user_id 
+		FROM user_menu a,rule_info b WHERE a.menu_id = b.rule_id AND b.rule_url_menu != "null" AND a.user_id = #{value}
+<!-- 		<where>
+			<include refid="userMenuWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by  desc 
+		</if> -->
+	</select>
+
+	<select id="queryPageList" resultMap="userMenuResult"
+		parameterType="userMenu">
+		select
+		<include refid="userMenuColumn" />
+		from user_menu
+		<where>
+			<include refid="userMenuWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by  desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="userMenu">
+		select count() from user_menu
+		<where>
+			<include refid="userMenuWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteUserMenu" parameterType="java.lang.Integer">
+		delete from
+		user_menu where user_id = #{value}
+  	</delete>
+  	
+  	<delete id="deleteUserMenuByUserId" parameterType="java.lang.Integer">
+		delete from
+		user_menu where user_id = #{value}
+  	</delete>
+
+	<insert id="insertUserMenu" parameterType="userMenu">
+		insert into user_menu (
+		<if test="userId != null">
+			user_id
+			</if>
+		<if test="menuId != null">
+			,menu_id
+			</if>
+		<if test="menuUrl != null">
+			,menu_url
+			</if>
+		<if test="remark1 != null">
+			,remark1
+			</if>
+		<if test="remark2 != null">
+			,remark2
+			</if>
+		) values(
+		<if test="userId != null">
+			#{userId}
+			</if>
+		<if test="menuId != null">
+			,#{menuId}
+			</if>
+		<if test="menuUrl != null">
+			,#{menuUrl}
+			</if>
+		<if test="remark1 != null">
+			,#{remark1}
+			</if>
+		<if test="remark2 != null">
+			,#{remark2}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateUserMenu" parameterType="userMenu">
+		update user_menu set 
+		<if test="userId != null">
+			user_id=#{userId}
+			</if>
+		<if test="menuId != null">
+			,menu_id=#{menuId}
+			</if>
+		<if test="menuUrl != null">
+			,menu_url=#{menuUrl}
+			</if>
+		<if test="remark1 != null">
+			,remark1=#{remark1}
+			</if>
+		<if test="remark2 != null">
+			,remark2=#{remark2}
+			</if>
+		where user_id =#{userId}
+	</update>
+</mapper>

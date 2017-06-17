@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.PledgeCashDao">
+	<resultMap id="pledgeCashResult" type="pledgeCash">
+		<result property="pledgeId" column="pledge_id" />
+		<result property="pledgeMoney" column="pledge_money" />
+		<result property="pledgeUsable" column="pledge_usable" />
+		<result property="pledgeDate" column="pledge_date" />
+		<result property="memberId" column="member_id" />
+		<result property="memberOpenId" column="openId" />
+		<result property="memberPhone" column="memberPhone" />
+		<result property="memberName" column="memberName" />
+	</resultMap>
+
+	<sql id="pledgeCashWhere">
+		<if test="pledgeId != null">      	
+        <![CDATA[ pledge_id like concat('%',#{pledgeId},'%') ]]>
+		</if>
+		<if test="pledgeMoney != null">      	
+        <![CDATA[ pledge_money like concat('%',#{pledgeMoney},'%') ]]>
+		</if>
+		<if test="pledgeUsable != null">      	
+        <![CDATA[ pledge_usable like concat('%',#{pledgeUsable},'%') ]]>
+		</if>
+		<if test="pledgeDate != null">      	
+        <![CDATA[ pledge_date like concat('%',#{pledgeDate},'%') ]]>
+		</if>
+		<if test="memberId != null">      	
+        <![CDATA[ member_id like concat('%',#{memberId},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="pledgeCashColumn">
+		pledge_id,pledge_money,pledge_usable,pledge_date,member_id
+  </sql>
+
+	<select id="loadPledgeCash" resultMap="pledgeCashResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="pledgeCashColumn" />
+		from pledge_cash
+		where pledge_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="pledgeCashResult"
+		parameterType="pledgeCash">
+		select
+		<include refid="pledgeCashColumn" />
+		from pledge_cash
+		<where>
+			<include refid="pledgeCashWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by pledge_id desc 
+		</if> -->
+	</select>
+
+	<select id="queryPageList" resultMap="pledgeCashResult"
+		parameterType="pledgeCash">
+		SELECT p.*,m.member_name AS memberName,m.member_phone AS memberPhone,
+		m.member_open_id AS openId FROM pledge_cash p,member_info m 
+		WHERE p.member_id = m.member_id
+		<where>
+			<include refid="pledgeCashWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by pledge_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="pledgeCash">
+		select count(pledge_id) from pledge_cash
+		<where>
+			<include refid="pledgeCashWhere" />
+		</where>
+	</select>
+
+	<delete id="deletePledgeCash" parameterType="java.lang.Integer">
+		delete from
+		pledge_cash where pledge_id=#{value}
+  </delete>
+
+	<insert id="insertPledgeCash" parameterType="pledgeCash">
+		insert into pledge_cash (pledge_id
+		<if test="pledgeMoney != null">
+			,pledge_money
+			</if>
+		<if test="pledgeUsable != null">
+			,pledge_usable
+			</if>
+		<if test="pledgeDate != null">
+			,pledge_date
+			</if>
+		<if test="memberId != null">
+			,member_id
+			</if>
+		) values(#{pledgeId}
+		<if test="pledgeMoney != null">
+			,#{pledgeMoney}
+			</if>
+		<if test="pledgeUsable != null">
+			,#{pledgeUsable}
+			</if>
+		<if test="pledgeDate != null">
+			,#{pledgeDate}
+			</if>
+		<if test="memberId != null">
+			,#{memberId}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="pledgeId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updatePledgeCash" parameterType="pledgeCash">
+		update pledge_cash set pledge_id=#{pledgeId}
+		<if test="pledgeMoney != null">
+			,pledge_money=#{pledgeMoney}
+			</if>
+		<if test="pledgeUsable != null">
+			,pledge_usable=#{pledgeUsable}
+			</if>
+		<if test="pledgeDate != null">
+			,pledge_date=#{pledgeDate}
+			</if>
+		<if test="memberId != null">
+			,member_id=#{memberId}
+			</if>
+		where pledge_id=#{pledgeId}
+	</update>
+
+</mapper>

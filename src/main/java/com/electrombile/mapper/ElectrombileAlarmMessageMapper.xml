@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.electrombile.dao.ElectrombileAlarmMessageDao">
+	<resultMap id="electrombileAlarmMessageResult" type="electrombileAlarmMessage">
+		<result property="alarmId" column="alarm_id" />
+		<result property="electrombileId" column="electrombile_id" />
+		<result property="alarmStatus" column="alarm_status" />
+		<result property="alarmHandleResult" column="alarm_handle_result" />
+		<result property="alarmCause" column="alarm_cause" />
+		<result property="alarmType" column="alarm_type" />
+		<result property="remark" column="remark" />
+		<result property="remark1" column="remark1" />
+	</resultMap>
+
+	<sql id="electrombileAlarmMessageWhere">
+		<if test="alarmId != null">      	
+        <![CDATA[ alarm_id like concat('%',#{alarmId},'%') ]]>
+		</if>
+		<if test="electrombileId != null">      	
+        <![CDATA[ electrombile_id like concat('%',#{electrombileId},'%') ]]>
+		</if>		
+		<if test="alarmStatus != null">      	
+        <![CDATA[ alarm_status like concat('%',#{alarmStatus},'%') ]]>
+		</if>
+		<if test="alarmHandleResult != null">      	
+        <![CDATA[ alarm_handle_result like concat('%',#{alarmHandleResult},'%') ]]>
+		</if>
+		<if test="alarmCause != null">      	
+        <![CDATA[ alarm_cause like concat('%',#{alarmCause},'%') ]]>
+		</if>
+		<if test="alarmType != null">      	
+        <![CDATA[ alarm_type like concat('%',#{alarmType},'%') ]]>
+		</if>
+		<if test="remark != null">      	
+        <![CDATA[ remark like concat('%',#{remark},'%') ]]>
+		</if>
+		<if test="remark1 != null">      	
+        <![CDATA[ remark1 like concat('%',#{remark1},'%') ]]>
+		</if>
+	</sql>
+
+	<sql id="electrombileAlarmMessageColumn">
+		alarm_id,electrombile_id,alarm_status,alarm_handle_result,alarm_cause,alarm_type,remark,remark1
+  </sql>
+
+	<select id="loadElectrombileAlarmMessage" resultMap="electrombileAlarmMessageResult"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="electrombileAlarmMessageColumn" />
+		from electrombile_alarm_message
+		where alarm_id=#{value}
+	</select>
+
+	<select id="queryList" resultMap="electrombileAlarmMessageResult"
+		parameterType="electrombileAlarmMessage">
+		select
+		<include refid="electrombileAlarmMessageColumn" />
+		from electrombile_alarm_message
+		<where>
+			<include refid="electrombileAlarmMessageWhere" />
+		</where>
+		<if test="orderBy != null">
+			order by alarm_id desc 
+		</if>
+	</select>
+
+	<select id="queryPageList" resultMap="electrombileAlarmMessageResult"
+		parameterType="electrombileAlarmMessage">
+		select
+		<include refid="electrombileAlarmMessageColumn" />
+		from electrombile_alarm_message
+		<where>
+			<include refid="electrombileAlarmMessageWhere" />
+		</where>
+<!-- 		<if test="orderBy != null">
+			order by alarm_id desc 
+		</if>
+		<if test="firstRow != null and rowSize!= null">
+				<![CDATA[ limit #firstRow#,#rowSize# ]]>
+		</if> -->
+	</select>
+
+	<select id="queryCount" resultType="java.lang.Integer"
+		parameterType="electrombileAlarmMessage">
+		select count(alarm_id) from electrombile_alarm_message
+		<where>
+			<include refid="electrombileAlarmMessageWhere" />
+		</where>
+	</select>
+
+	<delete id="deleteElectrombileAlarmMessage" parameterType="java.lang.Integer">
+		delete from
+		electrombile_alarm_message where alarm_id=#{value}
+  </delete>
+
+	<insert id="insertElectrombileAlarmMessage" parameterType="electrombileAlarmMessage">
+		insert into electrombile_alarm_message (alarm_id
+		<if test="electrombileId != null">
+			,electrombile_id
+			</if>
+		<if test="alarmStatus != null">
+			,alarm_status
+			</if>
+		<if test="alarmHandleResult != null">
+			,alarm_handle_result
+			</if>
+		<if test="alarmCause != null">
+			,alarm_cause
+			</if>
+		<if test="alarmType != null">
+			,alarm_type
+			</if>
+		<if test="remark != null">
+			,remark
+			</if>
+		<if test="remark1 != null">
+			,remark1
+			</if>
+		) values(#{alarmId}
+		<if test="electrombileId != null">
+			,#{electrombileId}
+			</if>
+		<if test="alarmStatus != null">
+			,#{alarmStatus}
+			</if>
+		<if test="alarmHandleResult != null">
+			,#{alarmHandleResult}
+			</if>
+		<if test="alarmCause != null">
+			,#{alarmCause}
+			</if>
+		<if test="alarmType != null">
+			,#{alarmType}
+			</if>
+		<if test="remark != null">
+			,#{remark}
+			</if>
+		<if test="remark1 != null">
+			,#{remark1}
+			</if>
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="alarmId">
+			select LAST_INSERT_ID();
+    	</selectKey>
+	</insert>
+
+	<update id="updateElectrombileAlarmMessage" parameterType="electrombileAlarmMessage">
+		update electrombile_alarm_message set alarm_id=#{alarmId}
+		<if test="electrombileId != null">
+			,electrombile_id=#{electrombileId}
+			</if>
+		<if test="alarmStatus != null">
+			,alarm_status=#{alarmStatus}
+			</if>
+		<if test="alarmHandleResult != null">
+			,alarm_handle_result=#{alarmHandleResult}
+			</if>
+		<if test="alarmCause != null">
+			,alarm_cause=#{alarmCause}
+			</if>
+		<if test="alarmType != null">
+			,alarm_type=#{alarmType}
+			</if>
+		<if test="remark != null">
+			,remark=#{remark}
+			</if>
+		<if test="remark1 != null">
+			,remark1=#{remark1}
+			</if>
+		where alarm_id=#{alarmId}
+	</update>
+
+</mapper>
