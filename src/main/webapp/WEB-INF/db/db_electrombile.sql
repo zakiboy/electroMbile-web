@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.24 (32 bit)
 MySQL - 5.5.13 : Database - db_electrombile
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -99,7 +100,8 @@ CREATE TABLE `electrombile_info` (
   `electrombile_no` varchar(50) DEFAULT NULL COMMENT '电动车编号',
   `electrombile_repair_status` int(2) DEFAULT NULL COMMENT '报修状态0正常1已报修2修理中3无法修复',
   `electrombile_type` int(2) DEFAULT NULL COMMENT '电动车0未骑行1骑行中',
-  `electrombile_coordinate` varchar(100) DEFAULT NULL COMMENT '电动车坐标',
+  `electrombile_longitude` double DEFAULT NULL COMMENT '电动车经度坐标',
+  `electrombile_latitude` double DEFAULT NULL COMMENT '电动车纬度坐标',
   `electrombile_electrical` varchar(100) DEFAULT NULL COMMENT '电动车电机',
   `electrombile_electric` varchar(100) DEFAULT NULL COMMENT '电动车电量',
   `electrombile_alarm_status` int(2) DEFAULT NULL COMMENT '报警状态0正常1已报警2处理中',
@@ -107,11 +109,11 @@ CREATE TABLE `electrombile_info` (
   `remark` varchar(25) DEFAULT NULL COMMENT '备注字段',
   `remark1` varchar(25) DEFAULT NULL COMMENT '备注字段1',
   PRIMARY KEY (`electrombile_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 /*Data for the table `electrombile_info` */
 
-insert  into `electrombile_info`(`electrombile_id`,`electrombile_no`,`electrombile_repair_status`,`electrombile_type`,`electrombile_coordinate`,`electrombile_electrical`,`electrombile_electric`,`electrombile_alarm_status`,`electrombile_status`,`remark`,`remark1`) values (1,'CSJQ123',1,0,'121.517032,31.273349','5165465','25%',0,1,NULL,NULL),(2,'CSJQ456',0,0,'121.490945,31.243406','516546534','15%',0,0,NULL,NULL),(3,'CSJQ789',0,0,'121.513798,31.246308','51654650','10%',0,0,NULL,NULL),(4,'CSJQ110',0,1,'121.445598,31.201964','516546500','5%',0,0,NULL,NULL),(5,'CSJQ111',0,1,'121.45724,31.177498','516546567','10%',0,0,NULL,NULL),(6,'CSJQ112',0,1,'121.457959,31.125702','516546534','25%',0,0,NULL,NULL),(7,'CSJQ122',1,1,'121.400468,31.254705','516546512','30%',0,0,NULL,NULL),(8,'CSJQ198',0,0,'121.400468,31.254715','516546599','10%',0,0,NULL,NULL);
+insert  into `electrombile_info`(`electrombile_id`,`electrombile_no`,`electrombile_repair_status`,`electrombile_type`,`electrombile_longitude`,`electrombile_latitude`,`electrombile_electrical`,`electrombile_electric`,`electrombile_alarm_status`,`electrombile_status`,`remark`,`remark1`) values (1,'CSJQ123',1,0,121.472188,31.244085,'5165465','25%',0,1,NULL,NULL),(2,'CSJQ456',0,0,121.449192,31.236305,'516546534','15%',0,0,NULL,NULL),(3,'CSJQ789',0,0,121.446604,31.215801,'51654650','10%',0,0,NULL,NULL),(4,'CSJQ110',0,1,121.449192,31.217036,'516546500','5%',0,0,NULL,NULL),(5,'CSJQ111',0,1,121.502802,31.227042,'516546567','10%',0,0,NULL,NULL),(6,'CSJQ112',0,1,121.485842,31.238404,'516546534','25%',0,0,NULL,NULL),(7,'CSJQ122',1,1,121.489292,31.231118,'516546512','30%',0,0,NULL,NULL),(8,'CSJQ198',0,0,121.495903,31.233835,'516546599','10%',0,0,NULL,NULL),(9,'CSJQ177',0,0,121.479375,31.240133,'5165465113','10',0,0,NULL,NULL),(10,'CSJQ166',0,0,121.486202,31.234391,'5165465993','10',0,0,NULL,NULL);
 
 /*Table structure for table `member_info` */
 
@@ -119,19 +121,31 @@ DROP TABLE IF EXISTS `member_info`;
 
 CREATE TABLE `member_info` (
   `member_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '会员ID',
-  `member_name` varchar(25) DEFAULT NULL COMMENT '会员微信号',
-  `member_open_id` varchar(50) DEFAULT NULL COMMENT '微信openId',
-  `member_sex` char(2) DEFAULT NULL COMMENT '会员性别',
-  `member_phone` char(11) DEFAULT NULL COMMENT '会员手机号',
-  `member_birthday` datetime DEFAULT NULL COMMENT '会员出生日期',
-  `member_status` bigint(2) DEFAULT NULL COMMENT '会员状态',
-  `electrombile_id` int(11) DEFAULT NULL COMMENT '电动车ID',
+  `nickname` varchar(25) DEFAULT NULL COMMENT '用户的昵称',
+  `openid` varchar(50) DEFAULT NULL COMMENT '用户的标识，对当前公众号唯一',
+  `sex` int(2) DEFAULT NULL COMMENT '用户的性别，值为1时是男性，值为2时是女性，值为0时是未知',
+  `city` varchar(20) DEFAULT NULL COMMENT '用户所在城市',
+  `country` varchar(20) DEFAULT NULL COMMENT '用户所在国家',
+  `province` varchar(20) DEFAULT NULL COMMENT '电动车ID',
+  `subscribe` int(1) DEFAULT NULL COMMENT '用户所在省份',
+  `language` char(5) DEFAULT NULL COMMENT '用户的语言，简体中文为zh_CN',
+  `headimgurl` varchar(150) DEFAULT NULL COMMENT '用户头像URL，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像）,用户没有头像时该项为空。若用户更换头像，原有头像URL将失效。',
+  `subscribe_time` datetime DEFAULT NULL COMMENT '用户关注时间，为时间戳。如果用户曾多次关注，则取最后关注时间',
+  `unionid` int(2) DEFAULT NULL COMMENT '只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。',
+  `remark` varchar(25) DEFAULT NULL COMMENT '公众号运营者对粉丝的备注，公众号运营者可在微信公众平台用户管理界面对粉丝添加备注',
+  `groupid` int(2) DEFAULT NULL COMMENT '用户所在的分组ID（兼容旧的用户分组接口）',
+  `tagid_list` int(2) DEFAULT NULL COMMENT '用户被打上的标签ID列表',
+  `name` varchar(25) DEFAULT NULL COMMENT '会员姓名',
+  `phone` char(11) DEFAULT NULL COMMENT '会员手机号',
+  `email` varchar(25) DEFAULT NULL COMMENT '会员邮箱',
+  `birthday` datetime DEFAULT NULL COMMENT '出生日期',
+  `adress` varchar(50) DEFAULT NULL COMMENT '地址',
+  `status` int(2) DEFAULT NULL COMMENT '状态0有效1无效',
+  `create_date` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`member_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='会员信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员信息表';
 
 /*Data for the table `member_info` */
-
-insert  into `member_info`(`member_id`,`member_name`,`member_open_id`,`member_sex`,`member_phone`,`member_birthday`,`member_status`,`electrombile_id`) values (1,'张二狗',NULL,'男','13526547896','2017-05-30 15:58:19',0,1),(2,'张丽丽',NULL,'女','13562458965','1990-12-12 00:00:00',0,NULL),(3,'张小明',NULL,'女','13562458965','1990-12-05 00:00:00',0,NULL),(4,'张丽丽2',NULL,'女','13562458965','1992-12-12 00:00:00',0,NULL),(5,'张丽丽3','OPENID02303','女','13562458965','1991-12-12 00:00:00',0,NULL),(6,'张小明·1','OPENID0230313213234','男','13562458965','1993-01-01 00:00:00',0,NULL);
 
 /*Table structure for table `order_info` */
 
@@ -150,11 +164,9 @@ CREATE TABLE `order_info` (
   UNIQUE KEY `ORDER_MEMBER_UNIQUE_PK` (`member_id`),
   UNIQUE KEY `ORDER_NO_PK` (`order_no`),
   CONSTRAINT `ORDER_MEMBER_PK` FOREIGN KEY (`member_id`) REFERENCES `member_info` (`member_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='订单信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单信息表';
 
 /*Data for the table `order_info` */
-
-insert  into `order_info`(`order_id`,`order_no`,`order_type`,`order_money`,`order_date`,`order_channel`,`order_status`,`member_id`) values (1,'QC656565656',0,'10.20','2017-05-14 18:14:45',0,0,1);
 
 /*Table structure for table `pledge_cash` */
 
@@ -166,6 +178,7 @@ CREATE TABLE `pledge_cash` (
   `pledge_usable` decimal(11,2) DEFAULT NULL COMMENT '可用金额',
   `pledge_date` datetime DEFAULT NULL COMMENT '押金日期',
   `member_id` int(11) DEFAULT NULL COMMENT '会员ID',
+  `user_id` int(11) DEFAULT NULL COMMENT '操作人员',
   PRIMARY KEY (`pledge_id`),
   UNIQUE KEY `PLEDGE_MEMBER_UNIQUE_PK` (`member_id`),
   CONSTRAINT `PLEDGE_MEMBER_PK` FOREIGN KEY (`member_id`) REFERENCES `member_info` (`member_id`)
@@ -187,7 +200,7 @@ CREATE TABLE `repairs_message` (
   `member_openId` varchar(30) DEFAULT NULL COMMENT '报修人员openID',
   `reparirs_date` datetime DEFAULT NULL COMMENT '维修时间',
   `user_id` int(11) DEFAULT NULL COMMENT '维修人员ID',
-  `remark` varchar(25) DEFAULT NULL COMMENT '备注字段',
+  `reparirs_status` int(2) DEFAULT NULL COMMENT '维修状态',
   `remark1` varchar(25) DEFAULT NULL COMMENT '备注字段1',
   PRIMARY KEY (`reparirs_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -267,6 +280,27 @@ CREATE TABLE `send_message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `send_message` */
+
+/*Table structure for table `tb_point` */
+
+DROP TABLE IF EXISTS `tb_point`;
+
+CREATE TABLE `tb_point` (
+  `timestamp` date NOT NULL COMMENT '时间戳',
+  `point` point NOT NULL COMMENT '经纬度',
+  `type` char(20) CHARACTER SET utf8 DEFAULT '' COMMENT '点类型',
+  `name` varchar(50) CHARACTER SET utf8 NOT NULL COMMENT '点名称',
+  `introduce` text CHARACTER SET utf8 COMMENT '介绍，包含文字、视频、目录，json格式',
+  `attention` int(5) NOT NULL DEFAULT '0' COMMENT '关注人数',
+  `score` tinyint(2) NOT NULL DEFAULT '0' COMMENT '评分，用于协同过滤推荐',
+  `status` tinyint(2) NOT NULL DEFAULT '2' COMMENT '状态，用于管理员添加',
+  `uri` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '维基uri',
+  PRIMARY KEY (`timestamp`,`point`(25)),
+  KEY `index_timestamp` (`timestamp`) USING BTREE,
+  KEY `index_name` (`name`) USING HASH
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+/*Data for the table `tb_point` */
 
 /*Table structure for table `user_info` */
 
